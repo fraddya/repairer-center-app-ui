@@ -2,64 +2,53 @@ const apiUrl = process.env.REACT_APP_API_URL;
 
 export interface User {
   id: number;
-  name: string;
+  firstName: string;
+  lastName: string;
+  contactNo: string;
+  dateJoin: any;
+  age: number;
+  genderType: string;
+  nic: string;
+  nationality: string;
+  religion: string;
+  userLogging: string;
+  role: string;
   email: string;
-  // Add other user fields as needed
+  vehicle: Vehicle[];
+}
+interface Vehicle {
+  vehicleNo: string;
+  model: string;
+  year: string;
+  color: string;
+  type: string;
+  description: string;
+  brand: {
+    id: number;
+  };
 }
 
-export const getUsers = async (): Promise<User[]> => {
-  const response = await fetch(`${apiUrl}/employees`);
-  if (!response.ok) {
-    throw new Error('Failed to fetch users');
-  }
-  const data = await response.json();
-  return data;
-};
-
-export const getUserById = async (id: number): Promise<User> => {
-  const response = await fetch(`${apiUrl}/users/${id}`);
-  if (!response.ok) {
-    throw new Error(`Failed to fetch user with id ${id}`);
-  }
-  const data = await response.json();
-  return data;
-};
-
-export const createUser = async (user: User): Promise<User> => {
-  const response = await fetch(`${apiUrl}/users`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(user),
-  });
-  if (!response.ok) {
-    throw new Error('Failed to create user');
-  }
-  const data = await response.json();
-  return data;
-};
-
-export const updateUser = async (id: number, user: User): Promise<User> => {
-  const response = await fetch(`${apiUrl}/users/${id}`, {
+export const loginUser = async (email: string, passWord: string): Promise<User> => {
+  const response = await fetch(`${apiUrl}/users/login`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(user),
+    body: JSON.stringify({ email, passWord }),
   });
-  if (!response.ok) {
-    throw new Error(`Failed to update user with id ${id}`);
+  if (response.status === 400) {
+    const errorResponse = await response.json();
+    throw new Error(errorResponse.validationFailures[0].message);
   }
+  else if (response.status === 500) {
+    throw new Error('Server Error');
+  }
+  // const { role } = await response.json();
+  // localStorage.setItem('userRole', role);
+  // console.log('Logged in user role:', role);
+  // if (!response.ok) {
+  //   throw new Error('Failed to log in');
+  // }
   const data = await response.json();
-  return data;
-};
-
-export const deleteUser = async (id: number): Promise<void> => {
-  const response = await fetch(`${apiUrl}/users/${id}`, {
-    method: 'DELETE',
-  });
-  if (!response.ok) {
-    throw new Error(`Failed to delete user with id ${id}`);
-  }
+  return data.content;
 };

@@ -1,18 +1,33 @@
 import React, { useState } from 'react';
 import { TextField, Button, Container, Typography, Box, Paper } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { loginUser } from '../services/userService';  // Import the loginUser function from your service
 
 const LoginPage: React.FC = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    // Implement your login logic here
-    if (username === 'admin' && password === 'admin') {
-      navigate('/dashboard');
-    } else {
-      alert('Invalid credentials');
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    try {
+      const user = await loginUser(email, password);
+      // console.log('Logged in user:', user);
+      if (user.role === 'ADMIN') {
+        localStorage.setItem('userRole', user.role);
+        navigate('/dashboard');
+      }
+      // navigate('/dashboard');
+      setError("User Not Authorized");
+    } catch (err: Error | any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -117,12 +132,14 @@ const LoginPage: React.FC = () => {
           <Box display="flex" justifyContent="center" mb={3}>
             <img src='./images/Main_logo.png' alt="Company Logo" style={{ height: '150px' }} />
           </Box>
-          <Box component="form" noValidate autoComplete="off">
+          <Box component="form" noValidate autoComplete="off" onSubmit={handleSubmit}>
             <TextField
-              label="Username"
+              label="Email"
+              type="email"
               fullWidth
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               sx={{ marginBottom: '20px', input: { color: '#FFF' } }}
               variant="outlined"
             />
@@ -130,19 +147,22 @@ const LoginPage: React.FC = () => {
               label="Password"
               type="password"
               fullWidth
+              required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               sx={{ marginBottom: '20px', input: { color: '#FFF' } }}
               variant="outlined"
             />
+            {error && <Typography color="error" align="center" sx={{ marginBottom: '20px' }}>{error}</Typography>}
             <Button
+              type="submit"
               variant="contained"
               color="primary"
               fullWidth
-              onClick={handleLogin}
+              disabled={loading}
               sx={{ padding: '10px 0', backgroundColor: '#FF5722' }}
             >
-              Login
+              {loading ? 'Logging in...' : 'Login'}
             </Button>
           </Box>
         </Paper>
