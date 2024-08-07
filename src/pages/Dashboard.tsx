@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Typography, Box, Drawer, List, ListItem, ListItemText } from '@mui/material';
-import { Home, Info, ContactMail, Work, People, LocalOffer, DirectionsCar } from '@mui/icons-material';
+import { Box, Drawer, List, ListItem, ListItemText } from '@mui/material';
+import { Home, Work, People, LocalOffer, DirectionsCar } from '@mui/icons-material';
 import { useNavigate, Outlet } from 'react-router-dom';
 
 const drawerWidth = 240;

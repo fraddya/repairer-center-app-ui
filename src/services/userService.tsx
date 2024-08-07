@@ -28,6 +28,19 @@ interface Vehicle {
   };
 }
 
+export const fetchEmployees = async (): Promise<User[]> => {
+  const response = await fetch(`${apiUrl}/users?role=EMPLOYEE`, {
+    method: 'GET',
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch employees');
+  }
+
+  const data = await response.json();
+  return data.content;
+};
+
 export const loginUser = async (email: string, passWord: string): Promise<User> => {
   const response = await fetch(`${apiUrl}/users/login`, {
     method: 'PUT',
