@@ -31,7 +31,7 @@ const Dashboard: React.FC = () => {
         anchor="left"
       >
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px' }}>
-          <img src='./images/Main_logo.png' alt="Company Logo" onClick={() => handleListItemClick('Home', '/dashboard')} style={{ height: '80px' }} />
+          <img src='./images/Main_logo.png' alt="Company Logo" onClick={() => handleListItemClick('Home', '/dashboard')} style={{ height: '120px' }} />
         </Box>
         <List>
           {[

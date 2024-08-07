@@ -20,6 +20,7 @@ const LoginPage: React.FC = () => {
       // console.log('Logged in user:', user);
       if (user.role === 'ADMIN') {
         localStorage.setItem('userRole', user.role);
+        localStorage.setItem('userName', user.firstName);
         navigate('/dashboard');
       }
       // navigate('/dashboard');
