@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography, Divider, MenuItem, FormControl, Select, InputLabel } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography, Divider, MenuItem, FormControl, Select, InputLabel, Grid, Card, CardContent } from '@mui/material';
 import { fetchJobs, updateJob, Job } from '../../services/JobService';
 import { fetchEmployees } from '../../services/userService';
 import { User } from '../../services/userService';
@@ -53,7 +53,6 @@ const EmployeeAssign: React.FC = () => {
   const handleSave = async () => {
     if (selectedJob) {
       try {
-        // Create an updatedJob object with the correct assignEmployee format
         const updatedJob = {
           ...selectedJob,
           assignEmployee: selectedJob.assignEmployee ? { ...selectedJob.assignEmployee, id: selectedJob.assignEmployee.id } : undefined,
@@ -70,76 +69,109 @@ const EmployeeAssign: React.FC = () => {
     }
   };
 
+  const glassCardStyles = {
+    borderRadius: '16px',
+    backdropFilter: 'blur(10px)',
+    boxShadow: '0 8px 16px rgba(0,0,0,0.1)',
+    background: 'rgba(255, 255, 255, 0.2)',
+    border: '1px solid rgba(255, 255, 255, 0.3)',
+  };
+
+  const glassContentStyles = {
+    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    borderRadius: '16px',
+  };
+
   const columns: GridColDef[] = [
-    { field: 'id', headerName: 'ID', flex: 1, headerClassName: 'header-style' },
-    { field: 'jobDateAndTime', headerName: 'Date & Time', flex: 2, headerClassName: 'header-style' },
-    { field: 'jobDescription', headerName: 'Description', flex: 3, headerClassName: 'header-style' },
-    { field: 'customer.firstName', headerName: 'Customer Name', flex: 2, headerClassName: 'header-style' },
+    { field: 'id', headerName: 'ID', width: 90, headerAlign: 'center' },
+    { field: 'jobDateAndTime', headerName: 'Date & Time', flex: 2, headerAlign: 'center' },
+    { field: 'jobDescription', headerName: 'Description', flex: 3, headerAlign: 'center' },
+    { field: 'customer.firstName', headerName: 'Customer Name', flex: 2, headerAlign: 'center' },
     {
       field: 'edit',
       headerName: 'Edit',
       flex: 1,
-      headerClassName: 'header-style',
+      headerAlign: 'center',
       renderCell: (params) => (
-        <Button variant="contained" onClick={() => handleEditClick(params.row)}>Edit</Button>
+        <Button variant="contained" color="primary" onClick={() => handleEditClick(params.row)}>Edit</Button>
       ),
     },
     {
       field: 'details',
       headerName: 'Details',
       flex: 1,
-      headerClassName: 'header-style',
+      headerAlign: 'center',
       renderCell: (params) => (
-        <Button variant="outlined" style={{ color: 'white', borderColor: 'white' }} onClick={() => handleRowClick(params)}>View Details</Button>
+        <Button variant="outlined" style={{ color: 'black', borderColor: 'black' }} onClick={() => handleRowClick(params)}>View Details</Button>
       ),
     },
   ];
 
   return (
     <div style={{ height: 600, width: '100%' }}>
-      <h2>Employee Assign For Job</h2>
-      <DataGrid
-        rows={jobs}
-        columns={columns}
-        pageSizeOptions={[5]}
-        pagination
-        autoHeight
-        sx={{
-          '.header-style': {
-            fontWeight: 'bold',
-          },
-          '& .MuiDataGrid-columnHeaders': {
-            backgroundColor: '#f5f5f5',
-          },
-          '& .MuiDataGrid-row': {
-            cursor: 'pointer',
-          },
-        }}
-      />
+      <Grid container spacing={2}>
+        <Grid item xs={12} paddingBottom={2}>
+          <Card sx={glassCardStyles}>
+            <CardContent sx={glassContentStyles}><h2>Employee Assign For Job</h2></CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12}>
+          <Card sx={glassCardStyles}>
+            <CardContent sx={glassContentStyles}>
+              <DataGrid
+                rows={jobs}
+                columns={columns}
+                pageSizeOptions={[5]}
+                pagination
+                autoHeight
+                sx={{
+                  '& .MuiDataGrid-root': {
+                    border: 'none',
+                  },
+                  '& .MuiDataGrid-cell': {
+                    borderBottom: '1px solid red', // Red table lines
+                    textAlign: 'center',
+                  },
+                  '& .MuiDataGrid-row:hover': {
+                    backgroundColor: 'rgba(255, 165, 0, 0.2)', // Orange hover effect
+                  },
+                  '& .MuiDataGrid-columnHeader': {
+                    backgroundColor: 'black',
+                    color: 'white',
+                    fontWeight: 'bold',
+                  },
+                  '& .MuiDataGrid-columnHeaderTitle': {
+                    color: 'white',
+                    fontWeight: 'bold',
+                  },
+                }}
+              />
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
 
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Edit Job</DialogTitle>
         <DialogContent>
           {selectedJob && (
-            <>
-              <FormControl fullWidth margin="dense">
-                <InputLabel id="employee-select-label">Assign Employee</InputLabel>
-                <Select
-                  labelId="employee-select-label"
-                  value={selectedJob.assignEmployee ? selectedJob.assignEmployee.id : ''}
-                  onChange={(e) => setSelectedJob({
-                    ...selectedJob,
-                    assignEmployee: { ...selectedJob.assignEmployee, id: Number(e.target.value) }
-                  })}
-                >
-                  {employees.map((employee) => (
-                    <MenuItem key={employee.id} value={employee.id}>
-                      {employee.firstName} {employee.lastName}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </>
+            <FormControl fullWidth margin="dense">
+              <InputLabel id="employee-select-label">Assign Employee</InputLabel>
+              <Select
+                labelId="employee-select-label"
+                value={selectedJob.assignEmployee ? selectedJob.assignEmployee.id : ''}
+                onChange={(e) => setSelectedJob({
+                  ...selectedJob,
+                  assignEmployee: { ...selectedJob.assignEmployee, id: Number(e.target.value) }
+                })}
+              >
+                {employees.map((employee) => (
+                  <MenuItem key={employee.id} value={employee.id}>
+                    {employee.firstName} {employee.lastName}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           )}
         </DialogContent>
         <DialogActions>

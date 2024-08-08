@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
+import { Grid, Card, CardContent } from '@mui/material';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { fetchAllJobs, Job } from '../../services/JobService';
 
@@ -56,17 +57,40 @@ const AllJob: React.FC = () => {
     };
   };
 
+  const glassCardStyles = {
+    borderRadius: '16px',
+    backdropFilter: 'blur(10px)',
+    boxShadow: '0 8px 16px rgba(0,0,0,0.1)',
+    background: 'rgba(255, 255, 255, 0.2)',
+    border: '1px solid rgba(255, 255, 255, 0.3)',
+  };
+
+  const glassContentStyles = {
+    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    borderRadius: '16px',
+  };
+
   return (
     <div>
-      <h2>All Job</h2>
-      <Calendar
-        localizer={localizer}
-        events={events}
-        startAccessor="start"
-        endAccessor="end"
-        style={{ height: 600 }}
-        eventPropGetter={eventStyleGetter}
-      />
+      <Grid item xs={12} sm={12} md={12} paddingBottom={2}>
+          <Card sx={glassCardStyles}>
+            <CardContent sx={glassContentStyles}><h2>All Job</h2></CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} sm={12} md={12} paddingBottom={2}>
+          <Card sx={glassCardStyles}>
+            <CardContent sx={glassContentStyles}>
+            <Calendar
+                localizer={localizer}
+                events={events}
+                startAccessor="start"
+                endAccessor="end"
+                style={{ height: 600 }}
+                eventPropGetter={eventStyleGetter}
+              />
+            </CardContent>
+          </Card>
+        </Grid>
     </div>
   );
 };
