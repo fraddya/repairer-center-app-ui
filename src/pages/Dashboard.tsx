@@ -17,48 +17,49 @@ const Dashboard: React.FC = () => {
   return (
     <Box sx={{ display: 'flex', height: '100vh' }}>
       <Drawer
+  sx={{
+    width: drawerWidth,
+    flexShrink: 0,
+    '& .MuiDrawer-paper': {
+      width: drawerWidth,
+      boxSizing: 'border-box',
+      backgroundColor: '#2C3E50',  // Dark blue-gray color for the sidebar
+      color: '#ECF0F1',  // Light text color for contrast
+    },
+  }}
+  variant="permanent"
+  anchor="left"
+>
+  <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px' }}>
+    <img src='./images/Main_logo.png' alt="Company Logo" onClick={() => handleListItemClick('Home', '/dashboard')} style={{ height: '120px' }} />
+  </Box>
+  <List>
+    {[
+      { text: 'Home', icon: <Home />, path: '/dashboard/home' },
+      { text: 'Job', icon: <Work />, path: '/dashboard/job' },
+      { text: 'Employee', icon: <People />, path: '/dashboard/employee' },
+      { text: 'Brand', icon: <LocalOffer />, path: '/dashboard/brand' },
+      { text: 'Vehicle Part', icon: <DirectionsCar />, path: '/dashboard/vehicle-part' },
+    ].map(({ text, icon, path }) => (
+      <ListItem
+        button
+        key={text}
+        onClick={() => handleListItemClick(text, path)}
         sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          '& .MuiDrawer-paper': {
-            width: drawerWidth,
-            boxSizing: 'border-box',
-            backgroundColor: '#FF5722',  // Sidebar color
-            color: '#FFF',  // Sidebar text color
+          color: '#ECF0F1',  // Light text color for list items
+          '&:hover': {
+            backgroundColor: '#34495E',  // Slightly lighter color for hover effect
           },
+          backgroundColor: activeItem === text ? '#34495E' : 'inherit',
         }}
-        variant="permanent"
-        anchor="left"
       >
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px' }}>
-          <img src='./images/Main_logo.png' alt="Company Logo" onClick={() => handleListItemClick('Home', '/dashboard')} style={{ height: '120px' }} />
-        </Box>
-        <List>
-          {[
-            { text: 'Home', icon: <Home />, path: '/dashboard' },
-            { text: 'Job', icon: <Work />, path: '/dashboard/job' },
-            { text: 'Employee', icon: <People />, path: '/dashboard/employee' },
-            { text: 'Brand', icon: <LocalOffer />, path: '/dashboard/brand' },
-            { text: 'Vehicle Part', icon: <DirectionsCar />, path: '/dashboard/vehicle-part' },
-          ].map(({ text, icon, path }) => (
-            <ListItem
-              button
-              key={text}
-              onClick={() => handleListItemClick(text, path)}
-              sx={{
-                color: '#FFF',
-                '&:hover': {
-                  backgroundColor: '#FF7043',
-                },
-                backgroundColor: activeItem === text ? '#FF7043' : 'inherit',
-              }}
-            >
-              {icon}
-              <ListItemText primary={text} sx={{ color: '#FFF' }} />
-            </ListItem>
-          ))}
-        </List>
-      </Drawer>
+        {icon}
+        <ListItemText primary={text} sx={{ color: '#ECF0F1' }} />
+      </ListItem>
+    ))}
+  </List>
+</Drawer>
+
       <Box
         component="main"
         sx={{
@@ -66,7 +67,7 @@ const Dashboard: React.FC = () => {
           bgcolor: 'background.default',
           p: 3,
           height: '100vh',
-          background: 'linear-gradient(45deg, #e68600, #d6982d, #d1ad1d, #f5bc02)',
+          background: 'linear-gradient(45deg, #ffcc00, #ff9900, #ff6600, #ff3300)',
           backgroundSize: '400% 400%',
         }}
       >
