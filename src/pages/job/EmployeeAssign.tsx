@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography, Divider, MenuItem, FormControl, Select, InputLabel, Grid, Card, CardContent } from '@mui/material';
-import { fetchJobs, updateJob, Job } from '../../services/JobService';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography, Divider, MenuItem, FormControl, Select, InputLabel, Grid, Card, CardContent, Snackbar, Alert } from '@mui/material';
+import { fetchJobs, assingJob, Job } from '../../services/JobService';
 import { fetchEmployees } from '../../services/userService';
 import { User } from '../../services/userService';
 
@@ -11,6 +11,9 @@ const EmployeeAssign: React.FC = () => {
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [expandedJob, setExpandedJob] = useState<Job | null>(null);
   const [employees, setEmployees] = useState<User[]>([]);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
 
   useEffect(() => {
     const loadJobs = async () => {
@@ -19,6 +22,9 @@ const EmployeeAssign: React.FC = () => {
         setJobs(jobs);
       } catch (error) {
         console.error('Failed to load jobs:', error);
+        setSnackbarMessage('Failed to load jobs');
+        setSnackbarSeverity('error');
+        setSnackbarOpen(true);
       }
     };
 
@@ -28,6 +34,9 @@ const EmployeeAssign: React.FC = () => {
         setEmployees(employees);
       } catch (error) {
         console.error('Failed to load employees:', error);
+        setSnackbarMessage('Failed to load employees');
+        setSnackbarSeverity('error');
+        setSnackbarOpen(true);
       }
     };
 
@@ -51,22 +60,37 @@ const EmployeeAssign: React.FC = () => {
   };
 
   const handleSave = async () => {
-    if (selectedJob) {
+    if (selectedJob && selectedJob.assignEmployee) {
       try {
-        const updatedJob = {
-          ...selectedJob,
-          assignEmployee: selectedJob.assignEmployee ? { ...selectedJob.assignEmployee, id: selectedJob.assignEmployee.id } : undefined,
-        };
-
-        await updateJob(selectedJob.id, updatedJob);
+        // Extract the ID from the selected employee
+        const employeeId = selectedJob.assignEmployee.id;
+  
+        // Call assingJob with the job ID and employee ID
+        await assingJob(selectedJob.id, employeeId);
+        
+        setSnackbarMessage('Employee assigned successfully');
+        setSnackbarSeverity('success');
+        setSnackbarOpen(true);
         setOpen(false);
         setSelectedJob(null);
+  
+        // Reload jobs after assignment
         const updatedJobs = await fetchJobs('CONFIRM');
         setJobs(updatedJobs);
       } catch (error) {
-        console.error('Failed to update job:', error);
+        console.error('Failed to assign job:', error);
+        setSnackbarMessage('Server Error');
+        setSnackbarSeverity('error');
+        setSnackbarOpen(true);
       }
     }
+  };
+  
+  
+
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   const glassCardStyles = {
@@ -201,6 +225,18 @@ const EmployeeAssign: React.FC = () => {
           <Button onClick={() => setExpandedJob(null)}>Close</Button>
         </DialogActions>
       </Dialog>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        message={snackbarMessage}
+      >
+        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

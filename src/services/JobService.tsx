@@ -116,3 +116,26 @@ export const updateJob = async (jobId: number, updatedJob: Partial<Job>): Promis
   const data = await response.json();
   return data.content;
 };
+
+export const assingJob = async (jobId: number, assignEmployeeId: number): Promise<Job> => {
+  const response = await fetch(`${apiUrl}/jobs/${jobId}/adminAssign`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      assignEmployee: {
+        id: assignEmployeeId,
+      },
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to assign job');
+  }
+
+  const data = await response.json();
+  return data.content;
+};
+
+
