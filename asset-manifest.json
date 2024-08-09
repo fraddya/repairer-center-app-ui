@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/repairer-center-app-ui/static/css/main.d385411c.css",
+    "main.js": "/repairer-center-app-ui/static/js/main.ed203053.js",
+    "index.html": "/repairer-center-app-ui/index.html",
+    "main.d385411c.css.map": "/repairer-center-app-ui/static/css/main.d385411c.css.map",
+    "main.ed203053.js.map": "/repairer-center-app-ui/static/js/main.ed203053.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.d385411c.css",
+    "static/js/main.ed203053.js"
+  ]
+}
