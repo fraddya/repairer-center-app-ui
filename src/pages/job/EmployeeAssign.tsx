@@ -190,8 +190,8 @@ const EmployeeAssign: React.FC = () => {
                 })}
               >
                 {employees.map((employee) => (
-                  <MenuItem key={employee.id} value={employee.id}>
-                    {employee.firstName} {employee.lastName}
+                  <MenuItem key={employee?.id} value={employee?.id}>
+                    {employee?.firstName} {employee?.lastName}
                   </MenuItem>
                 ))}
               </Select>
@@ -212,6 +212,7 @@ const EmployeeAssign: React.FC = () => {
               <Typography variant="h6">Repairer Items:</Typography>
               {expandedJob.repairerItems.map(item => (
                 <div key={item.id}>
+                  <Typography variant="body1"><strong>Description:</strong> {item.part.name}</Typography>
                   <Typography variant="body1"><strong>Description:</strong> {item.description}</Typography>
                   <Typography variant="body1"><strong>Quantity:</strong> {item.quantity}</Typography>
                   <Typography variant="body1"><strong>Estimate Price:</strong> ${item.estimatePrice.toFixed(2)}</Typography>

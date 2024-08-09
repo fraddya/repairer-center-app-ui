@@ -66,7 +66,7 @@ const Dashboard: React.FC = () => {
           flexGrow: 1,
           bgcolor: 'background.default',
           p: 3,
-          height: '100vh',
+          height: 'full-height',
           background: 'linear-gradient(45deg, #ffcc00, #ff9900, #ff6600, #ff3300)',
           backgroundSize: '400% 400%',
         }}

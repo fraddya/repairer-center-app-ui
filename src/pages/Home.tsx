@@ -14,17 +14,26 @@ import {
   Paper,
 } from '@mui/material';
 import { fetchAllJobs, fetchJobs, Job } from '../services/JobService';
-import { fetchEmployees, User } from '../services/userService';
+import { fetchEmployees, fetchUsers, User } from '../services/userService';
 import { PieChart } from '@mui/x-charts/PieChart';
 import { LineChart } from '@mui/x-charts/LineChart';
+import {
+  Person as PersonIcon,
+  Work as WorkIcon,
+  AttachMoney as AttachMoneyIcon,
+  Build as BuildIcon
+} from '@mui/icons-material';
 
 const Home: React.FC = () => {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [employees, setEmployees] = useState<User[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [newRequestJobs, setNewRequestJobs] = useState<Job[]>([]);
   const [confirmJobs, setConfirmJobs] = useState<Job[]>([]);
   const [monthlyIncome, setMonthlyIncome] = useState<any[]>([]);
   const [jobStatusData, setJobStatusData] = useState<any[]>([]);
+  const [totalEarnings, setTotalEarnings] = useState<number>(0);
+  const [totalRepairs, setTotalRepairs] = useState<number>(0); // New state for total repairs
 
   useEffect(() => {
     // Fetch all jobs
@@ -38,14 +47,24 @@ const Home: React.FC = () => {
       // Calculate job status distribution
       const statusData = calculateJobStatusData(data);
       setJobStatusData(statusData);
+
+      // Calculate total earnings
+      const earnings = calculateTotalEarnings(data);
+      setTotalEarnings(earnings);
     });
 
     // Fetch employees
     fetchEmployees().then(setEmployees);
 
+    // Fetch users
+    fetchUsers().then(setUsers);
+
     // Fetch NEWREQUEST and CONFIRM jobs
     fetchJobs('NEWREQUEST').then(setNewRequestJobs);
     fetchJobs('CONFIRM').then(setConfirmJobs);
+
+    // Fetch jobs with DONE status for total repairs
+    fetchJobs('DONE').then((doneJobs) => setTotalRepairs(doneJobs.length)); // Update total repairs
   }, []);
 
   const calculateMonthlyIncome = (jobs: Job[]) => {
@@ -56,7 +75,6 @@ const Home: React.FC = () => {
 
   const calculateJobStatusData = (jobs: Job[]) => {
     // Calculate job status distribution
-    // Implement your logic here
     return jobs.reduce((acc: any[], job) => {
       const status = job.jobStatus;
       const existingStatus = acc.find((item) => item.label === status);
@@ -67,6 +85,11 @@ const Home: React.FC = () => {
       }
       return acc;
     }, []);
+  };
+
+  const calculateTotalEarnings = (jobs: Job[]) => {
+    // Calculate total earnings from jobs
+    return jobs.reduce((acc, job) => acc + (job.estimatePrice || 0), 0);
   };
 
   const glassCardStyles = {
@@ -94,32 +117,52 @@ const Home: React.FC = () => {
         <Grid item xs={12} sm={6} md={3}>
           <Card sx={glassCardStyles}>
             <CardContent sx={glassContentStyles}>
-              <Typography variant="h5">Number of Users</Typography>
-              <Typography variant="h6">{/* Number of users */}</Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <PersonIcon sx={{ fontSize: 40, marginRight: 2 }} />
+                <Box>
+                  <Typography variant="h6">Number of Users</Typography>
+                  <Typography variant="h4" align='center'>{users.length}</Typography> {/* Number of users */}
+                </Box>
+              </Box>
             </CardContent>
           </Card>
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <Card sx={glassCardStyles}>
             <CardContent sx={glassContentStyles}>
-              <Typography variant="h5">Number of Employees</Typography>
-              <Typography variant="h6">{employees.length}</Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <WorkIcon sx={{ fontSize: 40, marginRight: 2 }} />
+                <Box>
+                  <Typography variant="h6">Number of Employees</Typography>
+                  <Typography variant="h4" align='center'>{employees.length}</Typography>
+                </Box>
+              </Box>
             </CardContent>
           </Card>
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <Card sx={glassCardStyles}>
             <CardContent sx={glassContentStyles}>
-              <Typography variant="h5">Total Earnings</Typography>
-              <Typography variant="h6">{/* Total earnings */}</Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <AttachMoneyIcon sx={{ fontSize: 40, marginRight: 2 }} />
+                <Box>
+                  <Typography variant="h6">Total Earnings</Typography>
+                  <Typography variant="h4" align='center'>${totalEarnings.toFixed(2)}</Typography>
+                </Box>
+              </Box>
             </CardContent>
           </Card>
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <Card sx={glassCardStyles}>
             <CardContent sx={glassContentStyles}>
-              <Typography variant="h5">Total Repairs</Typography>
-              <Typography variant="h6">{/* Total repairs */}</Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <BuildIcon sx={{ fontSize: 40, marginRight: 2 }} />
+                <Box>
+                  <Typography variant="h6">Total Repairs</Typography>
+                  <Typography variant="h4" align='center'>{totalRepairs}</Typography> {/* Updated to use totalRepairs */}
+                </Box>
+              </Box>
             </CardContent>
           </Card>
         </Grid>

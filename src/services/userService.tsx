@@ -44,6 +44,19 @@ export const fetchEmployees = async (): Promise<User[]> => {
   return data.content;
 };
 
+export const fetchUsers = async (): Promise<User[]> => {
+  const response = await fetch(`${apiUrl}/users?role=USER`, {
+    method: 'GET',
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch employees');
+  }
+
+  const data = await response.json();
+  return data.content;
+};
+
 // Fetch a user by ID
 export const fetchUserById = async (id: number): Promise<User> => {
   const response = await fetch(`${apiUrl}/users/${id}`, {
