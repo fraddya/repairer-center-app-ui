@@ -9,8 +9,6 @@ import VehiclePart from './pages/VehiclePart';
 import Home from './pages/Home';
 
 const App: React.FC = () => {
-  const apiUrl = process.env.REACT_APP_API_URL;
-  const env = process.env.REACT_APP_ENV;
   
   return (
     <Router>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography, Divider, FormControl, FormControlLabel, Radio, RadioGroup, Card, CardContent, Grid } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography, Divider, FormControl, FormControlLabel, Radio, RadioGroup, Card, CardContent, Grid, Snackbar, Alert } from '@mui/material';
 import { fetchJobs, updateJob, Job } from '../../services/JobService';
 import { JobStatus } from '../../enums/JobStatus';
 
@@ -9,6 +9,9 @@ const NewRequestJob: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [expandedJob, setExpandedJob] = useState<Job | null>(null);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
 
   useEffect(() => {
     const loadJobs = async () => {
@@ -17,6 +20,9 @@ const NewRequestJob: React.FC = () => {
         setJobs(jobs);
       } catch (error) {
         console.error('Failed to load jobs:', error);
+        setSnackbarMessage('Failed to load jobs');
+        setSnackbarSeverity('error');
+        setSnackbarOpen(true);
       }
     };
 
@@ -42,14 +48,24 @@ const NewRequestJob: React.FC = () => {
     if (selectedJob) {
       try {
         await updateJob(selectedJob.id, selectedJob);
+        setSnackbarMessage('Job updated successfully');
+        setSnackbarSeverity('success');
+        setSnackbarOpen(true);
         setOpen(false);
         setSelectedJob(null);
         const updatedJobs = await fetchJobs('NEWREQUEST');
         setJobs(updatedJobs);
       } catch (error) {
         console.error('Failed to update job:', error);
+        setSnackbarMessage('Failed to update job');
+        setSnackbarSeverity('error');
+        setSnackbarOpen(true);
       }
     }
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   const glassCardStyles = {
@@ -203,6 +219,18 @@ const NewRequestJob: React.FC = () => {
           </Card>
         </Grid>
       </Grid>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        message={snackbarMessage}
+      >
+        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
