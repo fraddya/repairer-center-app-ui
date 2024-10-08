@@ -1,0 +1,7 @@
+export enum JobStatus {
+    WAITING_FOR_CONFIRMATION = 'WATINGFORCONFIRM',
+    REJECTED = 'REJECT',
+    CONFIRM = 'CONFIRM',
+    ASSIGN = 'ASSIGN',
+  }
+  

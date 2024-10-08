@@ -7,6 +7,8 @@
     "@emotion/styled": "^11.13.0",
     "@mui/icons-material": "^5.16.5",
     "@mui/material": "^5.16.5",
+    "@mui/x-charts": "^7.12.0",
+    "@mui/x-data-grid": "^7.12.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -14,7 +16,10 @@
     "@types/node": "^16.18.104",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
+    "axios": "^1.7.3",
     "react": "^18.3.1",
+    "react-big-calendar": "^1.13.2",
+    "react-bootstrap": "^2.10.4",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.25.1",
     "react-scripts": "5.0.1",
@@ -22,6 +27,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
+    "start:staging": "dotenv -e .env.staging react-scripts start",
+    "build:staging": "dotenv -e .env.staging react-scripts build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -46,7 +53,9 @@
     ]
   },
   "devDependencies": {
+    "@types/react-big-calendar": "^1.8.9",
     "@types/react-router-dom": "^5.3.3",
+    "dotenv-cli": "^7.4.2",
     "env-cmd": "^10.1.0"
   }
 }
